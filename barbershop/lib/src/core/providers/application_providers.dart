@@ -4,4 +4,5 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'application_providers.g.dart';
 
 @Riverpod(keepAlive: true)
-RestClient restClient(RestClient ref)=> RestClient();
+
+RestClient restClient(RestClientRef ref)=> RestClient();
