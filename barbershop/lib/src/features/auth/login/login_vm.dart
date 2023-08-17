@@ -3,6 +3,7 @@ import 'package:barbershop/src/core/exceptions/service_exception.dart';
 import 'package:barbershop/src/core/fp/either.dart';
 import 'package:barbershop/src/core/providers/application_providers.dart';
 import 'package:barbershop/src/features/auth/login/login_state.dart';
+import 'package:barbershop/src/model/user_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'login_vm.g.dart';
@@ -13,7 +14,6 @@ class LoginVm extends _$LoginVm {
   LoginState build() => LoginState.initial();
 
   Future<void> login(String email, String password) async {
-
     final loaderHandler = AsyncLoaderHandler()..start();
 
     final loginService = ref.watch(userLoginServiceProvider);
@@ -23,11 +23,20 @@ class LoginVm extends _$LoginVm {
       case Success():
         //buscar dados do usuario logado
         //fazer uma analise para qual o tipo do login
+
+        final UserModel = await ref.read(getMeProvider.future);
+        switch (UserModel) {
+          case UserModelADM():
+            state = state.copyWith(status: LoginStateStatus.admLogin);
+
+          case UserModelEmployee():
+            state = state.copyWith(status: LoginStateStatus.employeeLogin);
+        }
         break;
-      case Failure(exception : ServiceException(: final message)):
+      case Failure(exception: ServiceException(:final message)):
         state = state.copyWith(
           status: LoginStateStatus.error,
-          errorMessage: () => message,  
+          errorMessage: () => message,
         );
     }
     loaderHandler.close();
