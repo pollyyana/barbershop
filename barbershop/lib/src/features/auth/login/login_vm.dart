@@ -27,8 +27,8 @@ class LoginVm extends _$LoginVm {
         //!invalidando os caches para evitar o login com o usuario errado
         ref.invalidate(getMyBarbershopProvider);
 
-        final UserModel = await ref.read(getMeProvider.future);
-        switch (UserModel) {
+        final userModel = await ref.read(getMeProvider.future);
+        switch (userModel) {
           case UserModelADM():
             state = state.copyWith(status: LoginStateStatus.admLogin);
 
