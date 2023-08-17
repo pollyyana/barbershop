@@ -25,10 +25,8 @@ UserLoginService userLoginService(UserLoginServiceRef ref) =>
 Future<UserModel> getMe(GetMeRef ref) async {
   final result = await ref.watch(userRepositoryProvider).me();
 
- return switch (result) {
+  return switch (result) {
     Success(value: final userModel) => userModel,
     Failure(:final exception) => throw exception,
-
-     
   };
 }
