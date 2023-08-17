@@ -1,4 +1,4 @@
-class UserModel {
+sealed class UserModel {
   final int id;
   final String name;
   final String email;
