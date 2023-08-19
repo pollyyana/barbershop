@@ -2,20 +2,20 @@ import 'package:barbershop/src/core/ui/constants.dart';
 import 'package:flutter/material.dart';
 
 class HoursPanel extends StatelessWidget {
-
   final int startTime;
   final int endTime;
+  final ValueChanged<int> onHourPressed;
 
-    const HoursPanel({
-      super.key,
+  const HoursPanel({
+    super.key,
     required this.startTime,
-    required this.endTime
+    required this.endTime,
+    required this.onHourPressed,
   });
-
 
   @override
   Widget build(BuildContext context) {
-    return  Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -32,16 +32,12 @@ class HoursPanel extends StatelessWidget {
           spacing: 8,
           runSpacing: 16,
           children: [
-            for(int i =  startTime; i <= endTime; i++)
-             TimeButton(
-              label: '${i.toString().padLeft(2, '0')}:00'
+            for (int i = startTime; i <= endTime; i++)
+              TimeButton(
+                label: '${i.toString().padLeft(2, '0')}:00',
+                value: i,
+                onPressed: onHourPressed,
               )
-            // TimeButton(label: '8:00'),
-            // TimeButton(label: '9:00'),
-            // TimeButton(label: '10:00'),
-            // TimeButton(label: '11:00'),
-            // TimeButton(label: '12:00'),
-            // TimeButton(label: '13:00'),
           ],
         )
       ],
@@ -49,33 +45,64 @@ class HoursPanel extends StatelessWidget {
   }
 }
 
-class TimeButton extends StatelessWidget {
+class TimeButton extends StatefulWidget {
+  final String label;
+  final int value;
+  final ValueChanged<int> onPressed;
+
   const TimeButton({
     super.key,
     required this.label,
+    required this.value,
+    required this.onPressed,
   });
 
-  final String label;
+  @override
+  State<TimeButton> createState() => _TimeButtonState();
+}
+
+class _TimeButtonState extends State<TimeButton> {
+  var selected = false;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 64,
-      height: 36,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.white,
-        border: Border.all(color: ColorsConstants.grey),
-      ),
-      child: Center(
-        child: Text(
-          label,
-          style: const TextStyle(
-              fontSize: 12,
-              color: ColorsConstants.grey,
-              fontWeight: FontWeight.w500),
+    final textColor = selected ? Colors.white : ColorsConstants.grey;
+    var buttonColor = selected ? ColorsConstants.brow : Colors.white;
+    final buttonBorderColor =
+        selected ? ColorsConstants.brow : ColorsConstants.grey;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: () {
+        setState(() {
+          selected = !selected;
+          widget.onPressed(widget.value);
+        });
+      },
+      child: Container(
+        width: 64,
+        height: 36,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: buttonColor,
+          border: Border.all(color: buttonBorderColor),
+        ),
+        child: Center(
+          child: Text(
+            widget.label,
+            style: TextStyle(
+                fontSize: 12, color: textColor, fontWeight: FontWeight.w500),
+          ),
         ),
       ),
     );
   }
 }
+
+
+ // TimeButton(label: '8:00'),
+            // TimeButton(label: '9:00'),
+            // TimeButton(label: '10:00'),
+            // TimeButton(label: '11:00'),
+            // TimeButton(label: '12:00'),
+            // TimeButton(label: '13:00'),

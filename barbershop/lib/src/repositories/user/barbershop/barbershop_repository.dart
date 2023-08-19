@@ -10,7 +10,7 @@ abstract interface class BarbershopRepository {
     String name ,
     String email ,
     List<String>openingDays,
-    List<String>openingHours,
+    List<int>openingHours,
   })data);
   Future<Either<RepositoryException, BarbershopModel>> getMyBarbershop(
       UserModel userModel);
