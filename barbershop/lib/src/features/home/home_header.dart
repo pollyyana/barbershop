@@ -1,8 +1,12 @@
+import 'package:barbershop/src/core/providers/application_providers.dart';
 import 'package:barbershop/src/core/ui/barbershop_icon.dart';
 import 'package:barbershop/src/core/ui/constants.dart';
+import 'package:barbershop/src/core/ui/widgets/barbershop_loader.dart';
+import 'package:barbershop/src/features/home/adm/home_adm_vm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeHeader extends StatelessWidget {
+class HomeHeader extends ConsumerWidget {
   final bool hideFilter;
 
   const HomeHeader({super.key, this.hideFilter = false});
@@ -10,7 +14,9 @@ class HomeHeader extends StatelessWidget {
   // const HomeHeader.withoutFilter({super.key}) : showFilter = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final barbershop = ref.watch(getMyBarbershopProvider);
+
     return Container(
       padding: const EdgeInsets.all(24.0),
       margin: const EdgeInsets.only(bottom: 16),
@@ -33,7 +39,9 @@ class HomeHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          barbershop.maybeWhen(
+            data: (barbershopData){
+              return Row(
             children: [
               const CircleAvatar(
                 backgroundColor: Color(0xffbdbdbd),
@@ -42,11 +50,11 @@ class HomeHeader extends StatelessWidget {
               const SizedBox(
                 width: 16,
               ),
-              const Flexible(
+               Flexible(
                 child: Text(
-                  'Andrea',
+                  barbershopData.name,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.bold),
@@ -65,7 +73,9 @@ class HomeHeader extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  ref.read(homeAdmVmProvider.notifier).logout(); 
+                },
                 icon: const Icon(
                   BarbershopIcon.exit,
                   color: ColorsConstants.brow,
@@ -73,7 +83,14 @@ class HomeHeader extends StatelessWidget {
                 ),
               ),
             ],
-          ),
+          );
+            },
+            orElse: () {
+            return const Center(
+              child: BarbershopLoader(),
+            );
+          }),
+          
           const SizedBox(
             height: 24,
           ),
