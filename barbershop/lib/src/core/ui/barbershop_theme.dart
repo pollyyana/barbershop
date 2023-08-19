@@ -41,5 +41,17 @@ sealed class BarbershopTheme {
           ),
         ),
       ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(
+            color: ColorsConstants.brow,
+            width: 1,
+          ),
+          foregroundColor: ColorsConstants.brow,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          )
+        )
+      ),
       fontFamily: FontConstants.fontFamily);
 }
