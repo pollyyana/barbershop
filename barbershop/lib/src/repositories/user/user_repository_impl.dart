@@ -134,7 +134,7 @@ class UserRepositoryImpl implements UserRepository {
       ({
         int barbershopId,
         String email,
-        Strinh name,
+        String name,
         String password,
         List<int> workHours,
         List<String> workdays,

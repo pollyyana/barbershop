@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:barbershop/src/core/providers/application_providers.dart';
+import 'package:barbershop/src/core/ui/helpers/messages.dart';
 import 'package:barbershop/src/core/ui/widgets/avatar_widget.dart';
 import 'package:barbershop/src/core/ui/widgets/barbershop_loader.dart';
 import 'package:barbershop/src/core/ui/widgets/hours_panel.dart';
 import 'package:barbershop/src/core/ui/widgets/weekdays_panel.dart';
+import 'package:barbershop/src/features/employee/register/employee_register_state.dart';
 import 'package:barbershop/src/features/employee/register/employee_register_vm.dart';
 import 'package:barbershop/src/model/barbershop_model.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +42,19 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
     final employeeRegisterVm = ref.watch(employeeRegisterVmProvider.notifier);
     final barbershopAsncValue = ref.watch(getMyBarbershopProvider);
 
+    ref.listen(employeeRegisterVmProvider.select((state) => state.status),
+        (_, status) {
+      switch (status) {
+        case EmployeeRegisterStateStatus.initial:
+          break;
+        case EmployeeRegisterStateStatus.success:
+          Messages.showError(' Colaborador cadastrado com sucesso', context);
+          Navigator.of(context).pop();
+        case EmployeeRegisterStateStatus.error:
+          Messages.showError('Erro ao registrar colaborador', context);
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cadastrar Colaborador'),
@@ -52,10 +67,9 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
             child: Text('Erro ao carregar a pagina'),
           );
         },
-        loading: () => BarbershopLoader(),
-        
+        loading: () => const BarbershopLoader(),
         data: (barbershopModel) {
-          final BarbershopModel(: openingDays, :openingHours) = barbershopModel;
+          final BarbershopModel(:openingDays, :openingHours) = barbershopModel;
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -95,8 +109,9 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                           children: [
                             TextFormField(
                               controller: nameEC,
-                              validator:
-                                  Validatorless.required('Nome Obrigátorio'),
+                              validator: registerADM
+                                  ? null
+                                  : Validatorless.required('Nome Obrigátorio'),
                               decoration: const InputDecoration(
                                 label: Text('Nome'),
                               ),
@@ -106,10 +121,13 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                             ),
                             TextFormField(
                               controller: emailEC,
-                              validator: Validatorless.multiple([
-                                Validatorless.required('E-mail Obrigátorio'),
-                                Validatorless.email('E-mail Inválido')
-                              ]),
+                              validator: registerADM
+                                  ? null
+                                  : Validatorless.multiple([
+                                      Validatorless.required(
+                                          'E-mail Obrigátorio'),
+                                      Validatorless.email('E-mail Inválido')
+                                    ]),
                               decoration: const InputDecoration(
                                 label: Text('E-mail'),
                               ),
@@ -119,11 +137,15 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                             ),
                             TextFormField(
                               controller: passwordEC,
-                              validator: Validatorless.multiple([
-                                Validatorless.required('Senha Obrigátoria'),
-                                Validatorless.min(6,
-                                    'Senha deve conter pelo menos 6 caracteres'),
-                              ]),
+                              validator: registerADM
+                                  ? null
+                                  : Validatorless.multiple([
+                                      Validatorless.required(
+                                          'Senha Obrigátoria'),
+                                      Validatorless.min(6,
+                                          'Senha deve conter pelo menos 6 caracteres'),
+                                    ]),
+                                    obscureText: true,
                               decoration: const InputDecoration(
                                 label: Text('Senha'),
                               ),
@@ -156,7 +178,33 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(56),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          switch (formKey.currentState?.validate()) {
+                            case false || null:
+                              Messages.showError(
+                                  'Existem campos invalidos', context);
+                            case true:
+                              final EmployeeRegisterState(
+                                workdays: List(isNotEmpty: hasWorkDays),
+                                workhours: List(isNotEmpty: hasWorkHours),
+                              ) = ref.watch(employeeRegisterVmProvider);
+
+                              if (!hasWorkDays || !hasWorkHours) {
+                                Messages.showError(
+                                    'Por favor selecione os dias da semana e horario de atendimento',
+                                    context);
+                                return;
+                              }
+                              final name = nameEC.text;
+                              final email = emailEC.text;
+                              final password = passwordEC.text;
+                              employeeRegisterVm.register(
+                                name: name,
+                                email: email,
+                                password: password,
+                              );
+                          }
+                        },
                         child: const Text('Cadastrar Colaborador'),
                       ),
                     ],
