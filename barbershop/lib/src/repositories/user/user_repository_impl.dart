@@ -98,4 +98,34 @@ class UserRepositoryImpl implements UserRepository {
           RepositoryException(message: 'Erro ao buscar colaboradores'));
     }
   }
+
+  @override
+  Future<Either<RepositoryException, Nil>> registerAdmAsEmployee(
+      ({
+        List<int> workHours,
+        List<String> workdays,
+      }) userModel) async {
+    try {
+      final userModelResult = await me();
+
+      final int userId;
+
+      switch (userModelResult) {
+        case Success(value: UserModel(:var id)):
+          userId = id;
+        case Failure(:var exception):
+          return Failure(exception);
+      }
+      await restClient.auth.put('/users/$userId', data: {
+        'work_days': userModel.workdays,
+        'work_hours': userModel.workHours,
+      });
+      return Success(nil);
+    } on DioException catch (e, s) {
+      log('Erro ao inserir administrador como colaborador',
+          error: e, stackTrace: s);
+      return Failure(RepositoryException(
+          message: 'Erro ao inserir administrador como colaborador'));
+    }
+  }
 }
