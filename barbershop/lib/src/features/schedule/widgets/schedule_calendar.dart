@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../core/ui/helpers/messages.dart';
 
+// ignore: must_be_immutable
 class ScheduleCalendar extends StatefulWidget {
   VoidCallback cancelPressed;
   ValueChanged<DateTime> okPressed;
