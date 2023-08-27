@@ -43,7 +43,7 @@ sealed class BarbershopTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          side: BorderSide(
+          side: const BorderSide(
             color: ColorsConstants.brow,
             width: 1,
           ),

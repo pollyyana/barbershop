@@ -48,7 +48,7 @@ class _EmployeeRegisterPageState extends ConsumerState<EmployeeRegisterPage> {
         case EmployeeRegisterStateStatus.initial:
           break;
         case EmployeeRegisterStateStatus.success:
-          Messages.showError(' Colaborador cadastrado com sucesso', context);
+          Messages.showSuccess('Colaborador cadastrado com sucesso', context);
           Navigator.of(context).pop();
         case EmployeeRegisterStateStatus.error:
           Messages.showError('Erro ao registrar colaborador', context);
