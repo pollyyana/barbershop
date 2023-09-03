@@ -14,15 +14,15 @@ class ScheduleModel {
     required this.date,
     required this.hour,
   });
-
   factory ScheduleModel.fromMap(Map<String, dynamic> json) {
+  print(ScheduleModel);
     switch (json) {
       case {
           'id': int id,
           'barbershop_id': int barbershopId,
           'user_id': int userId,
           'client_name': String clientName,
-          'date': String scheduleDate,
+          'date': String scheduleDate,  
           'time': int hour,
         }:
         return ScheduleModel(
@@ -34,6 +34,8 @@ class ScheduleModel {
           hour: hour,
         );
         case _:
+
+          print(ScheduleModel);
         throw ArgumentError('Invalid Json');
     }
   }

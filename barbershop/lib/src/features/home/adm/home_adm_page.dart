@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:barbershop/src/core/providers/application_providers.dart';
 import 'package:barbershop/src/core/ui/barbershop_icon.dart';
 import 'package:barbershop/src/core/ui/constants.dart';
 import 'package:barbershop/src/core/ui/widgets/barbershop_loader.dart';
@@ -24,6 +25,8 @@ class HomeAdmPage extends ConsumerWidget {
         onPressed: () async {
 
           await Navigator.of(context).pushNamed('/employee/register');
+
+          ref.invalidate(getMeProvider);
           ref.invalidate(homeAdmVmProvider);
         },
         child: const CircleAvatar(
