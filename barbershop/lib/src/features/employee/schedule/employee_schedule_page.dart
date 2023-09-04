@@ -20,6 +20,7 @@ class EmployeeSchedulePage extends ConsumerStatefulWidget {
 
 class _EmployeeSchedulePageState extends ConsumerState<EmployeeSchedulePage> {
   late DateTime dateSelected;
+  var ignoreFirstLoad = true;
 
   @override
   void initState() {
@@ -50,7 +51,7 @@ class _EmployeeSchedulePageState extends ConsumerState<EmployeeSchedulePage> {
             height: 44,
           ),
           scheduleAsync.when(
-              loading: () => BarbershopLoader(),
+              loading: () => const BarbershopLoader(),
               error: (error, stackTrace) {
                 log('Erro ao carregar agendamento',
                     error: error, stackTrace: stackTrace);
@@ -67,7 +68,20 @@ class _EmployeeSchedulePageState extends ConsumerState<EmployeeSchedulePage> {
                     todayHighlightColor: ColorsConstants.brow,
                     showDatePickerButton: true,
                     showTodayButton: true,
-                    dataSource: AppointmentDs(schedules:schedules),
+                    dataSource: AppointmentDs(schedules: schedules),
+                    onViewChanged: (ViewChangedDetails) {
+                      if (ignoreFirstLoad) {
+                        ignoreFirstLoad = false;
+                        return;
+                      }
+                      ref
+                          .read(employeeScheduleVmProvider(userId, dateSelected)
+                              .notifier)
+                          .changeDate(
+                            userId,
+                            ViewChangedDetails.visibleDates.first,
+                          );
+                    },
                     onTap: (calendarTapDetails) {
                       if (calendarTapDetails.appointments != null &&
                           calendarTapDetails.appointments!.isNotEmpty) {
@@ -93,7 +107,6 @@ class _EmployeeSchedulePageState extends ConsumerState<EmployeeSchedulePage> {
                             });
                       }
                     },
-                    
                   ),
                 );
               }),

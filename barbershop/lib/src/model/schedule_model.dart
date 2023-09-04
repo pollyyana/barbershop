@@ -35,7 +35,6 @@ class ScheduleModel {
         );
         case _:
 
-          print(ScheduleModel);
         throw ArgumentError('Invalid Json');
     }
   }

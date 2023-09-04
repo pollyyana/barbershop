@@ -27,7 +27,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       }) scheduleData) async {
     try {
       await restClient.auth.post('/schedules', data: {
-        'babershop_id': scheduleData.barbershopId,
+        'barbershop_id': scheduleData.barbershopId,
         'user_id': scheduleData.userId,
         'client_name': scheduleData.clientName,
         'date': scheduleData.date.toIso8601String(),

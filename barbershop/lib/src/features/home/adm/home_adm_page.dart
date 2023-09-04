@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:barbershop/src/core/providers/application_providers.dart';
 import 'package:barbershop/src/core/ui/barbershop_icon.dart';
 import 'package:barbershop/src/core/ui/constants.dart';
 import 'package:barbershop/src/core/ui/widgets/barbershop_loader.dart';
@@ -10,6 +9,8 @@ import 'package:barbershop/src/features/home/adm/widgets/home_employee_tile.dart
 import 'package:barbershop/src/features/home/home_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/providers/application_providers.dart';
 
 class HomeAdmPage extends ConsumerWidget {
   const HomeAdmPage({super.key});
@@ -25,7 +26,6 @@ class HomeAdmPage extends ConsumerWidget {
         onPressed: () async {
 
           await Navigator.of(context).pushNamed('/employee/register');
-
           ref.invalidate(getMeProvider);
           ref.invalidate(homeAdmVmProvider);
         },
